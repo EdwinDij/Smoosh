@@ -9,7 +9,7 @@ function RegisterForm() {
       <label>Mot de passe</label>
       <input type="password" name="pwd" className='input-login'/>
       <a href='#' >mot de passe oublié?</a>
-      <button>Se connecter</button>
+      <button className='submit-form'>Se connecter</button>
     </form>
 </div>
   )

@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import '../../Style/Form.scss'
 
 function LogForm() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [passwordConfirm, setPasswordConfirm] = useState("")
+
   return (
     <div>
         <form action='Post'className='log-form'>
