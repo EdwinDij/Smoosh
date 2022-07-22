@@ -28,11 +28,13 @@ function Login() {
         </p>
       </div>
       <div className="connection">
-        <button className='change-btn' id="register" onClick={handleModals}>S'inscrire</button>
-        <button className='change-btn' id="login" onClick={handleModals}>Connection</button>
         {register&&<LoginForm />}
         {login&&<Register />}
+        <div className="button-zone">
+        <button className='change-btn' id="register" onClick={handleModals}>S'inscrire</button>
+        <button className='change-btn' id="login" onClick={handleModals}>Connection</button>
         </div>
+      </div>
     </div>
   )
 }
