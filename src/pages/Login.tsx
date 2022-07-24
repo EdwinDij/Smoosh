@@ -3,8 +3,8 @@ import LoginForm from "../components/Form/Register";
 import Register from "../components/Form/LoginForm";
 import { useState, MouseEvent } from 'react';
 function Login() {
-  const [login, setLogin] = useState(false);
-  const [register, setRegister] = useState(true);
+  const [login, setLogin] = useState(true);
+  const [register, setRegister] = useState(false);
   const [isActive, setIsActive] = useState(false);
 
   const handleModals = (e: MouseEvent<HTMLButtonElement>) => {
@@ -12,13 +12,13 @@ function Login() {
       setRegister(true)
       setIsActive(true)
       setLogin(false)
-    } else {
+    } else if ((e.target as HTMLInputElement).id === "login"){
       setLogin(true)
       setIsActive(false)
       setRegister(false)
     }
-
   }
+
   return (
     <div className='Login'>
       <div className="description-site">
@@ -35,15 +35,16 @@ function Login() {
             style={{
               color: isActive ? 'red' : ''
             }}
-            onClick={handleModals}>S'inscrire</button>
+            onClick={handleModals}>{login}Connexion</button>
           <button className='change-btn' id="login"
             style={{
               color: isActive ? '' : 'red'
             }}
-            onClick={handleModals}>Connection</button>
+            onClick={handleModals}>{register}S'inscrire</button>
         </div>
-        {register && <LoginForm />}
-        {login && <Register />}
+        {register && <Register />}
+        {login && <LoginForm />}
+        
       </div>
     </div>
   )
