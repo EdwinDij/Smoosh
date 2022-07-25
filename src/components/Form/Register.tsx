@@ -1,9 +1,8 @@
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
-import React, { useState, MouseEvent, FormEvent, useEffect } from 'react';
+import { useState, FormEvent } from 'react';
 import { auth } from "../../Firebase.config"
 import { validEmail } from './regex';
-import '../../Style/Form.scss'
-import { format } from 'path';
+import { async } from '@firebase/util';
 
 function LogForm() {
   const [email, setEmail] = useState<string>("")
@@ -13,34 +12,43 @@ function LogForm() {
   const [passwordError, setPasswordError] = useState<string>("")
   const [passwordConfirmError, setPasswordConfirmError] = useState<string>("")
   const [emptyError, setEmptyError] = useState<string>("")
+  const [errorLogin, setErrorLogin] = useState("")
   const error = {
     emailError: "Mettre un mail valide",
-    passwordError: "caractère spéciaux et au moins un chiffre sont nécessaire",
+    passwordError: "Le mot de passe nécessite 8 caractères",
     passwordConfirmError: "Les mots de passe ne correspondent pas",
     emptyError: "remplir les champs du formulaire"
   }
-
-
   // envoie des donné a la base de donnée
 
-  const handleSignUp = () => {
-
-  if (password === passwordConfirm && validEmail.test(email.trim())) {
-    createUserWithEmailAndPassword
-    (auth, email, password)
-  } else
-    if (validEmail.test(email.trim())) {
-      setEmailError("")
+  const handleSignUp = async (e: FormEvent) => {
+    e.preventDefault()
+    /*if (password === passwordConfirm && validEmail.test(email.trim())) {
+      const userCredentials = createUserWithEmailAndPassword(auth, email, password)
+      console.log(userCredentials)
     } else
       if (password !== passwordConfirm) {
         setPasswordConfirmError(error.passwordConfirmError)
-      } else if (password && email && passwordConfirm === null) {
+      } else if (password || email || passwordConfirm === "") {
         setEmptyError(error.emptyError)
-      } 
+      } else if (password.length < 8) {
+        setPasswordError(error.passwordError)
+      } else if (validEmail.test(email) === false) {
+        setEmailError(error.emailError)*/
+  
+        try {
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+          console.log(userCredential.user)
+        } catch(error) {
+          console.log(error)
+          setErrorLogin(`${error}`)
+      }
     }
+  
   return (
     <div>
       <div className="emailError">{emailError}</div>
+      <div className="emailError">{errorLogin}</div>
       <div className="passwordError">{passwordError}</div>
       <div className="passwordConfirmError">{passwordConfirmError}</div>
       <div className="emptyError">{emptyError}</div>
@@ -61,7 +69,7 @@ function LogForm() {
           name="pwd"
           className='input-login'
           onChange={(e) => setPasswordConfirm(e.target.value)} />
-        <button type='submit'>S'inscrire</button>
+        <button className='submit-form' type='submit'>S'inscrire</button>
       </form>
     </div>
   )
