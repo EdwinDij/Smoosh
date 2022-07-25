@@ -20,6 +20,16 @@ const login = async (e: FormEvent) => {
     setErrorLogin(`${error}`)
   }
 }
+
+
+const showPassword = () => {
+  let inputPassword:any = document.getElementById("passwordhide")
+  if (inputPassword.type === "password") {
+    inputPassword.type = "text"
+  } else {
+    inputPassword.type = "password"
+  }
+}
   return (
     <div>
       <div>{errorLogin}</div>
@@ -32,9 +42,13 @@ const login = async (e: FormEvent) => {
       <label>Mot de passe</label>
       <input type="password" 
       name="pwd" 
+      id='passwordhide'
       className='input-login'
       onChange={(e) => setPassword(e.target.value)}/>
-
+<div>
+          <label className='labelChekbox'>afficher le mot de passe</label>
+          <input type="checkbox" onClick={showPassword}/>
+          </div>
       <a href='#' >mot de passe oublié?</a>
       <button className='submit-form' type="submit">Se connecter</button>
     </form>
