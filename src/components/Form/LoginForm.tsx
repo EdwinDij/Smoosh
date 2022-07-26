@@ -1,6 +1,6 @@
 import React, { FormEvent, useState } from 'react'
-import {Link} from "react-router-dom"
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import {useNavigate} from "react-router-dom"
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 function RegisterForm() {
 
@@ -8,19 +8,25 @@ const [email, setEmail] = useState("")
 const [password, setPassword] = useState("")
 const [errorLogin, setErrorLogin] = useState("")
 const auth = getAuth();
-
+const user = auth.currentUser
+const navigate = useNavigate();
 
 const login = async (e: FormEvent) => {
-
+  e.preventDefault()
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password)
     console.log(userCredential.user)
+    console.log(auth.currentUser)
+    if(user!== null) {
+      
+      navigate("/profil")
+    }
   } catch(error) {
     console.log(error)
     setErrorLogin(`${error}`)
+ 
   }
 }
-
 
 const showPassword = () => {
   let inputPassword:any = document.getElementById("passwordhide")
@@ -30,6 +36,7 @@ const showPassword = () => {
     inputPassword.type = "password"
   }
 }
+
   return (
     <div>
       <div>{errorLogin}</div>

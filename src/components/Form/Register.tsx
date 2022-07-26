@@ -1,6 +1,6 @@
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { useState, FormEvent } from 'react';
-import { auth } from "../../Firebase.config"
+import { useNavigate } from "react-router-dom"
 import { validEmail } from './regex';
 
 function LogForm() {
@@ -11,6 +11,11 @@ function LogForm() {
   const [passwordError, setPasswordError] = useState<string>("")
   const [passwordConfirmError, setPasswordConfirmError] = useState<string>("")
   const [errorLogin, setErrorLogin] = useState("")
+
+  const auth = getAuth();
+  const user = auth.currentUser
+  const navigate = useNavigate();
+
   const error = {
     emailError: "Mettre un mail valide",
     passwordError: "Le mot de passe nécessite 8 caractères",
@@ -32,17 +37,24 @@ function LogForm() {
     if (password === passwordConfirm && validEmail.test(email.trim())) {
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-        console.log(userCredential.user)
+        if(user != null){
+        const emailuser: any = user.email;
+        const emailVerified: any = user.emailVerified
+        localStorage.setItem('email', emailuser);
+        localStorage.setItem('email vérifié', emailVerified)
+        navigate("/userInfo")
+        }
       } catch (error) {
         console.log(error)
         setErrorLogin(`${error}`)
       }
     }
   }
+
   //afficher le mdp
 
   const showPassword = () => {
-    let inputPassword:any = document.getElementById("passwordhide")
+    let inputPassword: any = document.getElementById("passwordhide")
     if (inputPassword.type === "password") {
       inputPassword.type = "text"
     } else {
@@ -73,11 +85,11 @@ function LogForm() {
           name="pwd"
           className='input-login'
           onChange={(e) => setPasswordConfirm(e.target.value)} />
-          <div>
+        <div>
           <label className='labelChekbox'>afficher le mot de passe</label>
-          <input type="checkbox" onClick={showPassword}/>
-          </div>
-          
+          <input type="checkbox" onClick={showPassword} />
+        </div>
+
         <button className='submit-form' type='submit'>S'inscrire</button>
       </form>
     </div>
