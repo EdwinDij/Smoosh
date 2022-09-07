@@ -1,65 +1,51 @@
 import React, { FormEvent, useState } from 'react'
-import {useNavigate} from "react-router-dom"
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { Link } from "react-router-dom"
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import  { auth } from '../../Firebase.config'
 
 function RegisterForm() {
 
-const [email, setEmail] = useState("")
-const [password, setPassword] = useState("")
-const [errorLogin, setErrorLogin] = useState("")
-const auth = getAuth();
-const user = auth.currentUser
-const navigate = useNavigate();
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [errorLogin, setErrorLogin] = useState("")
 
-const login = async (e: FormEvent) => {
-  e.preventDefault()
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password)
-    console.log(userCredential.user)
-    console.log(auth.currentUser)
-    if(user!== null) {
-      
-      navigate("/profil")
+
+  const showPassword = () => {
+    let inputPassword: any = document.getElementById("passwordhide")
+    if (inputPassword.type === "password") {
+      inputPassword.type = "text"
+    } else {
+      inputPassword.type = "password"
     }
-  } catch(error) {
-    console.log(error)
-    setErrorLogin(`${error}`)
- 
   }
-}
 
-const showPassword = () => {
-  let inputPassword:any = document.getElementById("passwordhide")
-  if (inputPassword.type === "password") {
-    inputPassword.type = "text"
-  } else {
-    inputPassword.type = "password"
-  }
-}
+  
 
   return (
     <div>
       <div>{errorLogin}</div>
-    <form action='get'className='log-form' onSubmit={login}>
-      <label>Email</label>
-      <input type="text" 
-      name="email" 
-      className='input-login'
-      onChange={(e) => setEmail(e.target.value)}/>
-      <label>Mot de passe</label>
-      <input type="password" 
-      name="pwd" 
-      id='passwordhide'
-      className='input-login'
-      onChange={(e) => setPassword(e.target.value)}/>
-<div>
+      <form action='get' className='log-form' >
+        <label>Email</label>
+        <input type="text"
+          name="email"
+          className='input-login'
+          onChange={(e) => setEmail(e.target.value)} />
+        <label>Mot de passe</label>
+        <input type="password"
+          name="pwd"
+          id='passwordhide'
+          className='input-login'
+          onChange={(e) => setPassword(e.target.value)} />
+        <div className='bottom-form'>
+          <div>
           <label className='labelChekbox'>afficher le mot de passe</label>
-          <input type="checkbox" onClick={showPassword}/>
-          </div>
-      <a href='#' >mot de passe oublié?</a>
-      <button className='submit-form' type="submit">Se connecter</button>
-    </form>
-</div>
+          <input type="checkbox" onClick={showPassword} />
+        </div>
+        {/*<a href='#' >mot de passe oublié?</a>*/}
+        <button className='submit-form' type="submit">Se connecter</button>
+        </div>
+      </form>
+    </div>
   )
 }
 

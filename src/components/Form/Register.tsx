@@ -1,7 +1,10 @@
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useState, FormEvent } from 'react';
 import { useNavigate } from "react-router-dom"
+import { auth } from '../../Firebase.config';
 import { validEmail } from './regex';
+
+
 
 function LogForm() {
   const [email, setEmail] = useState<string>("")
@@ -12,47 +15,6 @@ function LogForm() {
   const [passwordConfirmError, setPasswordConfirmError] = useState<string>("")
   const [errorLogin, setErrorLogin] = useState("")
 
-  const auth = getAuth();
-  const user = auth.currentUser
-  const navigate = useNavigate();
-
-  const error = {
-    emailError: "Mettre un mail valide",
-    passwordError: "Le mot de passe nécessite 8 caractères",
-    passwordConfirmError: "Les mots de passe ne correspondent pas",
-    emptyError: "remplir les champs du formulaire"
-  }
-  // envoie des données a la base de donnée
-  const handleSignUp = async (e: FormEvent) => {
-    e.preventDefault()
-    if (password !== passwordConfirm) {
-      setPasswordConfirmError(error.passwordConfirmError)
-    }
-    if (password.length < 8) {
-      setPasswordError(error.passwordError)
-    }
-    if (validEmail.test(email) === false) {
-      setEmailError(error.emailError)
-    }
-    if (password === passwordConfirm && validEmail.test(email.trim())) {
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-        if(user != null){
-        const emailuser: any = user.email;
-        const emailVerified: any = user.emailVerified
-        localStorage.setItem('email', emailuser);
-        localStorage.setItem('email vérifié', emailVerified)
-        navigate("/userInfo")
-        }
-      } catch (error) {
-        console.log(error)
-        setErrorLogin(`${error}`)
-      }
-    }
-  }
-
-  //afficher le mdp
-
   const showPassword = () => {
     let inputPassword: any = document.getElementById("passwordhide")
     if (inputPassword.type === "password") {
@@ -61,13 +23,29 @@ function LogForm() {
       inputPassword.type = "password"
     }
   }
+
+  const signIn = (e: FormEvent) => {
+    e.preventDefault()
+    createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      console.log(userCredential)
+      const user:any = userCredential.user
+      localStorage.setItem('email', user.email)
+      localStorage.setItem('VerifiedEmail', user.emailVerified )
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+    })
+  }
+
   return (
     <div>
       <div className="emailError">{emailError}</div>
       <div className="emailError">{errorLogin}</div>
       <div className="passwordError">{passwordError}</div>
       <div className="passwordConfirmError">{passwordConfirmError}</div>
-      <form action='Post' onSubmit={handleSignUp} className='log-form'>
+      <form action='Post'className='log-form'>
         <label>Email</label>
         <input type="text"
           name="email"
@@ -85,12 +63,13 @@ function LogForm() {
           name="pwd"
           className='input-login'
           onChange={(e) => setPasswordConfirm(e.target.value)} />
-        <div>
+        <div className='bottom-form'>
+          <div>
           <label className='labelChekbox'>afficher le mot de passe</label>
-          <input type="checkbox" onClick={showPassword} />
+          <input type="checkbox" onClick={showPassword}/>
         </div>
-
-        <button className='submit-form' type='submit'>S'inscrire</button>
+        <button className='submit-form' type='submit' onClick={signIn}>S'inscrire</button>
+        </div>
       </form>
     </div>
   )
