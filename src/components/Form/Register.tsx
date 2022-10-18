@@ -1,19 +1,15 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useState, FormEvent } from 'react';
 import { useNavigate } from "react-router-dom"
-import { auth } from '../../Firebase.config';
-import { validEmail } from './regex';
+import { auth, db } from '../../Firebase.config';
+import {doc, setDoc} from 'firebase/firestore'
 
 
 
 function LogForm() {
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
-  const [passwordConfirm, setPasswordConfirm] = useState<string>("")
-  const [emailError, setEmailError] = useState<string>("")
-  const [passwordError, setPasswordError] = useState<string>("")
-  const [passwordConfirmError, setPasswordConfirmError] = useState<string>("")
-  const [errorLogin, setErrorLogin] = useState("")
+  const navigate = useNavigate()
 
   const showPassword = () => {
     let inputPassword: any = document.getElementById("passwordhide")
@@ -24,28 +20,28 @@ function LogForm() {
     }
   }
 
-  const signIn = (e: FormEvent) => {
+  const signIn = async (e: FormEvent) => {
     e.preventDefault()
-    createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      console.log(userCredential)
-      const user:any = userCredential.user
-      localStorage.setItem('email', user.email)
-      localStorage.setItem('VerifiedEmail', user.emailVerified )
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-    })
+    try {
+      const userCredential: any = await createUserWithEmailAndPassword(auth, email, password)
+      console.log(userCredential.user)
+      localStorage.setItem('email', userCredential.user.email)
+      localStorage.setItem('emailVérifié', userCredential.user.emailVerified)
+      navigate('/identity')
+      setDoc(doc(db,"users", email), { //création de l'user dans la db avec son mail et son uid
+        email: email,
+        uid : userCredential.user.uid
+      })
+    }
+    catch (error) {
+      console.log(error)
+      alert(error)
+    }
   }
 
   return (
     <div>
-      <div className="emailError">{emailError}</div>
-      <div className="emailError">{errorLogin}</div>
-      <div className="passwordError">{passwordError}</div>
-      <div className="passwordConfirmError">{passwordConfirmError}</div>
-      <form action='Post'className='log-form'>
+      <form action='Post' className='log-form'>
         <label>Email</label>
         <input type="text"
           name="email"
@@ -61,14 +57,13 @@ function LogForm() {
         <label>Confirmer le mot de passe</label>
         <input type="password"
           name="pwd"
-          className='input-login'
-          onChange={(e) => setPasswordConfirm(e.target.value)} />
+          className='input-login' />
         <div className='bottom-form'>
           <div>
-          <label className='labelChekbox'>afficher le mot de passe</label>
-          <input type="checkbox" onClick={showPassword}/>
-        </div>
-        <button className='submit-form' type='submit' onClick={signIn}>S'inscrire</button>
+            <label className='labelChekbox'>afficher le mot de passe</label>
+            <input type="checkbox" onClick={showPassword} />
+          </div>
+          <button className='submit-form' type='submit' onClick={signIn}>S'inscrire</button>
         </div>
       </form>
     </div>

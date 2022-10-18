@@ -1,14 +1,36 @@
 import React, { FormEvent, useState } from 'react'
-import { Link } from "react-router-dom"
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import  { auth } from '../../Firebase.config'
-
+import { signInWithEmailAndPassword } from "firebase/auth";
+import  { auth, db } from '../../Firebase.config'
+import { useNavigate } from "react-router-dom"
+import { doc, getDoc } from 'firebase/firestore';
 function RegisterForm() {
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [errorLogin, setErrorLogin] = useState("")
+  const [userCollection, setCollection] = useState([])
+  const navigate = useNavigate()
 
+
+
+  const login = async (e: FormEvent) => {
+    e.preventDefault()
+    const docRef = doc(db, 'users', email) // collection de l'user enregistrer
+    try {
+      const userCredentials:any = await signInWithEmailAndPassword(auth, email, password)
+      //console.log(userCredentials)
+      const user = userCredentials.user
+      const docUser = await getDoc(docRef)
+      const dataUser:any = docUser.data()
+      setCollection(dataUser)
+      console.log(userCollection)
+      navigate('/profil')
+    }
+    catch(error) {
+      console.log(error)
+      alert(error)
+    }
+  }
 
   const showPassword = () => {
     let inputPassword: any = document.getElementById("passwordhide")
@@ -24,7 +46,7 @@ function RegisterForm() {
   return (
     <div>
       <div>{errorLogin}</div>
-      <form action='get' className='log-form' >
+      <form action='get' className='log-form' onSubmit={login}>
         <label>Email</label>
         <input type="text"
           name="email"

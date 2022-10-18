@@ -1,24 +1,48 @@
-import React from 'react'
-
+import React, { useState, FormEvent } from 'react'
+import { useNavigate } from "react-router-dom"
+import { gameObj } from '../../JeuxObj'
+import { db } from '../../Firebase.config'
+import {  doc, updateDoc } from 'firebase/firestore'
 export default function Identity() {
+  const [pseudo, setPseudo] = useState("")
+  const [age, setAge] = useState("")
+  const [sexe, setSexe] = useState("")
+  const [game, setGame] = useState("")
+
+  const navigate = useNavigate()
+  const storEmail:any = localStorage.getItem('email')
+  const userRef:any = doc(db, 'users', storEmail)
+  const postData = async (e: FormEvent) => {
+    const userData = updateDoc(userRef,{
+      Pseudo: pseudo,
+      Âge: age,
+      Sexe: sexe,
+      Game: game,
+    },)
+  }
+  
 
   return (
     <div className='Identity'>
-      <form className='identity-form'>
+      <form className='identity-form' onSubmit={postData} >
         <label>Pseudo</label>
-        <input name="pseudo"type="text"/>
-        <label>Email</label>
-        <input name='email' type="text">{/*récuperer les donné du local storage*/}</input>
+        <input name="pseudo" type="text" onChange={(e) => setPseudo(e.target.value)} />
         <label>Âge</label>
-        <input name='age' type="number" min="0" max="100"/>
+        <input name='age' type="number" min="10" max="100" onChange={(e) => setAge(e.target.value)} />
         <label>Sexe</label>
-        <input type="text"list='sexe' name='sexe' id="sexeinput" />
-        <datalist id='sexe'>
-          <option value="Femme"/>
-          <option value="Homme"/>
-          <option value="Non-binaire"/>
-          <option value="Autre"/>
-        </datalist>
+        <select name='sexe' id="sexeinput" onChange={(e) => setSexe(e.target.value)}>
+          <option value="">--Choississez votre sexe</option>
+          <option value="Femme">Femme</option>
+          <option value="Homme">Homme</option>
+          <option value="Autre">Autre</option>
+          <option value="None">Ne souhaite pas le divulguer</option>
+        </select>
+        <label>Jeux favori</label>
+        <select name="games" id="games" onChange={(e) => setGame(e.target.value)}>
+          {gameObj.map((games: any, key: any) => {
+            return <option key={games.id}>{games.name}</option>
+          })}
+        </select>
         <button type='submit'>Envoyer</button>
       </form>
     </div>
