@@ -28,10 +28,10 @@ function LogForm() {
       localStorage.setItem('email', userCredential.user.email)
       localStorage.setItem('emailVérifié', userCredential.user.emailVerified)
       navigate('/identity')
-      setDoc(doc(db,"users", email), { //création de l'user dans la db avec son mail et son uid
+      setDoc(doc(db,"users", email ), { //création de l'user dans la db avec son mail et son uid
         email: email,
         uid : userCredential.user.uid
-      })
+      })  
     }
     catch (error) {
       console.log(error)

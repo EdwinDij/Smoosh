@@ -19,6 +19,7 @@ export default function Identity() {
       Sexe: sexe,
       Game: game,
     },)
+    navigate('/profil')
   }
   
 
