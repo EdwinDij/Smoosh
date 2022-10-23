@@ -1,5 +1,6 @@
 import { doc, getDoc } from 'firebase/firestore'
 import React, { useState } from 'react'
+import ProfilUser from '../components/ProfilUser'
 import {db} from '../Firebase.config'
 
 export default function Profil() {
@@ -13,7 +14,7 @@ export default function Profil() {
   const getUser = () => {
     getDoc(colRef)
       .then((snapshot) => {
-         console.log(snapshot.data())
+         //console.log(snapshot.data())
          const userCol:any = snapshot.data()
          setUserPseudo(userCol.Pseudo)
          setUserAge(userCol.Âge)
@@ -21,16 +22,11 @@ export default function Profil() {
          setUserSexe(userCol.Sexe)
       })
   }
-
 getUser()
-console.log(userPseudo)
 
   return (
-    <div className='profil'> 
-    <p>{userPseudo}</p>
-    <p>{userAge}</p>
-    <p>{userGame}</p>
-    <p>{userSexe}</p>
+    <div > 
+      <ProfilUser pseudo={userPseudo} age={userAge} game={userGame} sexe={userSexe} />
     </div>
   )
 }

@@ -1,7 +1,4 @@
 import React from 'react';
-import './App.scss';
-import './Style/Form.scss'
-import './Style/Loader.scss'
 import Login from './pages/Login'
 import Loader from './components/Loader/Loader'
 import Identity from './components/Form/Identity';

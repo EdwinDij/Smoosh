@@ -22,6 +22,7 @@ function RegisterForm() {
       const user = userCredentials.user
       const docUser = await getDoc(docRef)
       const dataUser:any = docUser.data()
+      localStorage.setItem('email', email)
       setCollection(dataUser)
       console.log(userCollection)
       navigate('/profil')
@@ -44,19 +45,19 @@ function RegisterForm() {
   
 
   return (
-    <div>
+    <div className='w-full max-w-xs'>
       <div>{errorLogin}</div>
-      <form action='get' className='log-form' onSubmit={login}>
+      <form action='get' className="flex flex-col gap-3"onSubmit={login}>
         <label>Email</label>
         <input type="text"
           name="email"
-          className='input-login'
+          className='focus:border-indigo-300' 
           onChange={(e) => setEmail(e.target.value)} />
         <label>Mot de passe</label>
         <input type="password"
           name="pwd"
           id='passwordhide'
-          className='input-login'
+          className='focus:border-indigo-300' 
           onChange={(e) => setPassword(e.target.value)} />
         <div className='bottom-form'>
           <div>
@@ -64,7 +65,7 @@ function RegisterForm() {
           <input type="checkbox" onClick={showPassword} />
         </div>
         {/*<a href='#' >mot de passe oublié?</a>*/}
-        <button className='submit-form' type="submit">Se connecter</button>
+        <button className=" text-white text-right bg-indigo-400 font-bold py-2 px-4 rounded hover:bg-indigo-500 " type="submit">Se connecter</button>
         </div>
       </form>
     </div>

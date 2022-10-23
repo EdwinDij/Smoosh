@@ -40,30 +40,30 @@ function LogForm() {
   }
 
   return (
-    <div>
-      <form action='Post' className='log-form'>
+    <div className='w-full max-w-xs'>
+      <form action='Post' className='flex flex-col gap-3 '>
         <label>Email</label>
         <input type="text"
           name="email"
-          className='input-login'
+          className='focus:border-indigo-300' 
           onChange={(e) => setEmail(e.target.value)}
         />
         <label>Mot de passe</label>
         <input type="password"
           name="pwd"
           id='passwordhide'
-          className='input-login'
+          className='focus:border-indigo-300' 
           onChange={(e) => setPassword(e.target.value)} />
         <label>Confirmer le mot de passe</label>
         <input type="password"
           name="pwd"
-          className='input-login' />
+          className='focus:border-indigo-300' />
         <div className='bottom-form'>
           <div>
             <label className='labelChekbox'>afficher le mot de passe</label>
             <input type="checkbox" onClick={showPassword} />
           </div>
-          <button className='submit-form' type='submit' onClick={signIn}>S'inscrire</button>
+          <button className="text-right text-white bg-indigo-400 font-bold py-2 px-4 rounded hover:bg-indigo-500 " type='submit' onClick={signIn}>S'inscrire</button>
         </div>
       </form>
     </div>
